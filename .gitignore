@@ -1,0 +1,28 @@
+# Node.js
+node_modules/
+
+# Dependency directories
+package-lock.json
+npm-debug.log
+
+# Logs
+logs
+*.log
+
+# Environment variables
+.env
+
+# Output of 'npm run build'
+/build/
+
+# IDE and text editor specific files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS generated files
+.DS_Store
+Thumbs.db
