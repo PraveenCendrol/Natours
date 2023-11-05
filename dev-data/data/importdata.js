@@ -3,11 +3,11 @@ const mongoose = require('mongoose');
 const fs = require('fs');
 const Tour = require('../../modals/tourModal');
 
-dotenv.config({ path: './config.env' });
+dotenv.config({ path: '/config.env' });
 
-const DB = process.env.DATABASE.replace(
+const DB = 'mongodb+srv://Praveenkb777:<PASSWORD>@cluster0.sjuh5qo.mongodb.net/natours?retryWrites=true&w=majority'.replace(
   '<PASSWORD>',
-  process.env.DATABASE_PASSWORD
+  '6A0e6NiEHUghlzDh'
 );
 
 mongoose
