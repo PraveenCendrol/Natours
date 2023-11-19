@@ -36,7 +36,7 @@ const toursSchema = new mongoose.Schema(
       min: [1.0, 'Rating must be above 1'],
       max: [5.0, 'Rating must not exceed 5.0']
     },
-    ratingQuantity: {
+    ratingsQuantity: {
       type: Number,
       default: 0
     },
@@ -76,7 +76,36 @@ const toursSchema = new mongoose.Schema(
     secretTour: {
       type: Boolean,
       default: false
-    }
+    },
+    startLocation: {
+      type: {
+        type: String,
+        default: 'Point',
+        enum: { values: ['Point'], message: 'Can only be Point' }
+      },
+      coordinates: [Number],
+      address: String,
+      description: String
+    },
+    locations: [
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: { values: ['Point'], message: 'Can only be Point' }
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: Number
+      }
+    ],
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
+      }
+    ]
   },
 
   {
@@ -101,6 +130,14 @@ toursSchema.pre('save', function(next) {
 toursSchema.pre(/^find/, function(next) {
   this.find({ secretTour: { $ne: true } });
 
+  next();
+});
+
+toursSchema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt'
+  });
   next();
 });
 
