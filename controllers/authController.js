@@ -111,7 +111,7 @@ exports.restictTo = (...roles) => {
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   // get user based on email
   const user = await User.findOne({ email: req.body.email });
-  console.log(user, req.body.email);
+
   if (!user) {
     return next(new AppError('There is no user with the email', 404));
   }
