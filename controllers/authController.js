@@ -111,7 +111,7 @@ exports.restictTo = (...roles) => {
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   // get user based on email
   const user = await User.findOne({ email: req.body.email });
-
+  console.log(user, req.body.email);
   if (!user) {
     return next(new AppError('There is no user with the email', 404));
   }
@@ -178,7 +178,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 exports.updatePassword = catchAsync(async (req, res, next) => {
   // get user from collection
 
-  const user = await User.findById(req.user._id).select('+password');
+  const user = await User.findById(req.user.id).select('+password');
 
   if (!user) return next(new AppError('User not found ', 400));
 

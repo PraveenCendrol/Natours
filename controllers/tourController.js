@@ -1,7 +1,7 @@
 const Tour = require('../modals/tourModal');
-const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
+
+const factory = require('./handlerFactory');
 
 exports.aliasTopTours = (req, res, next) => {
   // Limit query results to 5
@@ -16,80 +16,9 @@ exports.aliasTopTours = (req, res, next) => {
   next();
 };
 
-exports.getAllTours = catchAsync(async (req, res, next) => {
-  // fetch tours data with filters
-  const features = new APIFeatures(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .pagination();
-  const tours = await features.query;
-
-  // send response with success status
-  res.status(200).json({
-    status: 'success',
-    results: tours.length,
-    data: {
-      tours
-    }
-  });
-});
-
-exports.getTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.id);
-  if (!tour) {
-    return next(new AppError('No Tour found with that id', 404));
-  }
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour
-    }
-  });
-
-  // const tour = tours.find(el => el.id === id);
-});
-
-exports.createTour = catchAsync(async (req, res, next) => {
-  // console.log(req.body);
-
-  const newTour = await Tour.create(req.body);
-  res.status(201).json({
-    status: 'success',
-    data: {
-      tour: newTour
-    }
-  });
-});
-
-exports.updateTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true
-  });
-  if (!tour) {
-    return next(new AppError('No Tour found with that id', 404));
-  }
-
-  return res.status(200).json({
-    status: 'success',
-    data: {
-      tour: tour
-    }
-  });
-});
-
-exports.deleteTour = catchAsync(async (req, res, next) => {
-  const deleted = await Tour.findByIdAndDelete(req.params.id);
-  if (!deleted) {
-    return next(new AppError('No Tour found with that id', 404));
-  }
-  return res.status(204).json({
-    status: 'success',
-    data: deleted
-  });
-});
-
+exports.updateTour = factory.updateOne(Tour);
+exports.deleteTour = factory.deleteOne(Tour);
+// middleware for checking reviews before deleting a tour
 exports.getTourStats = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([
     {
@@ -166,3 +95,8 @@ exports.getMonthlyplan = catchAsync(async (req, res, next) => {
     message: plan
   });
 });
+exports.getAllTours = factory.getAll(Tour);
+
+exports.getTour = factory.getOne(Tour, { path: 'reviews' });
+
+exports.createTour = factory.createOne(Tour);

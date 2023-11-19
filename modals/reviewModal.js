@@ -18,7 +18,7 @@ const reviewSchema = mongoose.Schema(
     },
     tour: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Tour',
+      ref: 'Tours',
       required: [true, 'A review must be associated with a Tour']
     },
     user: {
@@ -36,6 +36,14 @@ const reviewSchema = mongoose.Schema(
     }
   }
 );
+
+reviewSchema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'user',
+    select: 'name photo'
+  });
+  next();
+});
 
 const Review = mongoose.model('Review', reviewSchema);
 
