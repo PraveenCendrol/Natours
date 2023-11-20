@@ -34,7 +34,8 @@ const toursSchema = new mongoose.Schema(
       type: Number,
       default: 4.5,
       min: [1.0, 'Rating must be above 1'],
-      max: [5.0, 'Rating must not exceed 5.0']
+      max: [5.0, 'Rating must not exceed 5.0'],
+      set: val => Math.round(val * 10) / 10
     },
     ratingsQuantity: {
       type: Number,
@@ -118,6 +119,10 @@ const toursSchema = new mongoose.Schema(
   }
 );
 
+toursSchema.index({ price: 1, ratingsAverage: -1 });
+toursSchema.index({ slug: 1 });
+toursSchema.index({ startLocation: '2dsphere' });
+
 toursSchema.virtual('durationWeeks').get(function() {
   return this.duration / 7;
 });
@@ -150,10 +155,10 @@ toursSchema.pre(/^find/, function(next) {
 // toursSchema.post(/^find/, function(docs, next) {});
 
 // Aggrigation middle ware
-toursSchema.pre('aggregate', function(next) {
-  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-  next();
-});
+// toursSchema.pre('aggregate', function(next) {
+//   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+//   next();
+// });
 
 // toursSchema.pre('find', function() {
 //   this.find({ secretTour: { $ne: true } });

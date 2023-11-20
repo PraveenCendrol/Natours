@@ -30,7 +30,10 @@ router
     authController.restictTo('admin', 'lead-guide'),
     tourController.createTour
   );
-
+router
+  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(tourController.getToursWithin);
+router.route('/distance/:latlng/unit/:unit').get(tourController.getDistance);
 router
   .route('/:id')
   .get(tourController.getTour)
@@ -44,12 +47,5 @@ router
     authController.restictTo('admin', 'lead-guide'),
     tourController.deleteTour
   );
-// router
-//   .route('/:tourId/reviews')
-//   .post(
-//     authController.protect,
-//     authController.restictTo('user'),
-//     reviewController.addReview
-//   );
 
 module.exports = router;
