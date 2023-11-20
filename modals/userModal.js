@@ -62,14 +62,13 @@ userSchema.pre('save', async function(next) {
   next();
 });
 
-userSchema.pre(/^find/, function() {
-  this.find({ active: { $ne: false } });
-});
-
 userSchema.pre('save', function(next) {
   if (!this.isModified('password') || this.isNew) return next();
   this.passwordChangedAt = Date.now() - 1000;
   return next();
+});
+userSchema.pre(/^find/, function() {
+  this.find({ active: { $ne: false } });
 });
 
 userSchema.methods.correctPassword = async function(inputPass, dbPass) {
@@ -96,11 +95,7 @@ userSchema.methods.createPasswordResetToken = function() {
     .digest('hex');
 
   this.passwordResetExpire = Date.now() + 10 * 60 * 1000;
-  console.log({
-    resetToken,
-    passwordResetToken: this.passwordResetToken,
-    passwordResetExpire: this.passwordResetExpire
-  });
+
   return resetToken;
 };
 

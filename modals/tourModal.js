@@ -32,7 +32,7 @@ const toursSchema = new mongoose.Schema(
     },
     ratingsAverage: {
       type: Number,
-      default: 0,
+      default: 4.5,
       min: [1.0, 'Rating must be above 1'],
       max: [5.0, 'Rating must not exceed 5.0']
     },
